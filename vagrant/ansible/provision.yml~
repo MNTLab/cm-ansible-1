@@ -77,7 +77,7 @@
     service: name=tomcat state=started
 
   - name: maven jenkins
-    template: src=src/hudson.tasks.Maven.xml dest=/var/lib/jenkins/ force=no
+    template: src=hudson.tasks.Maven.xml dest=/var/lib/jenkins/ force=no
   
   
 
