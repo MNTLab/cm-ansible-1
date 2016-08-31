@@ -1,12 +1,13 @@
-tudent***: Yauheni Likhachou
+Student***: Yauheni Likhachou
 
 Home Task Ansible
 
 ## Task Report Notes
-![](/resources/Screenshot.png)
-![](/resources/Screenshot-1.png)
-![](/resources/Screenshot-2.png)
-![](/resources/Screenshot-3.png)
-![](/resources/Screenshot-4.png)
+
+![](/sources/Screenshot.png)
+![](/sources/Screenshot-1.png)
+![](/sources/Screenshot-2.png)
+![](/sources/Screenshot-3.png)
+![](/sources/Screenshot-4.png)
 
 
