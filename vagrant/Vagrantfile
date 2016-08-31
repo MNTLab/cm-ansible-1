@@ -15,4 +15,11 @@ Vagrant.configure(2) do |config|
     ansible.playbook = 'ansible/provision.yml'
     ansible.verbose = 'vv'
   end
+
+ config.vm.provision "shell", inline: <<-SHELL
+    yum install -y python-devel python-pip  libffi-devel openssl-devel
+    pip install -U setuptools
+    pip install ansible==2.0.0.1
+  SHELL
+
 end
