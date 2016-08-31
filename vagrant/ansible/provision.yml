@@ -40,6 +40,9 @@
   - name: Downloading Jenkins from repo
     command: wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat/jenkins.repo
 
+  - name: Git install
+    yum: name=git state=latest
+
   - name: Jenkins repo key
     command: rpm --import https://jenkins-ci.org/redhat/jenkins-ci.org.key
 
@@ -51,6 +54,22 @@
 
   - name: Jenkins config2
     template: src=configs/config.xml dest=/var/lib/jenkins/config.xml
+
+  - name: Jenkins jobs
+    copy: src=jenkins/jobs dest=/var/lib/jenkins/ force=no
+
+  - name: Jenkins plugins
+    copy: src=jenkins/plugins dest=/var/lib/jenkins/ force=no
+
+  - name: Jenkins maven
+    copy: src=configs/hudson.tasks.Maven.xml dest=/var/lib/jenkins/ force=no
+
+  - name: Jenkins chown
+    command: chown -R jenkins:jenkins /var/lib/jenkins
+
+  - name: Jenkins sudo
+    copy: src=configs/jenkins-user dest=/etc/sudoers.d/ force=no
+
 
   - name: Jenkins starting
     service: name=jenkins state=started enabled=yes
