@@ -7,7 +7,7 @@ MTN.*NIX.11 Automated Environment Configuration Management
 
 My additional files:
 - [Vagrantfile](/vagrant/Vagrantfile)
-- [vagrant.yml](/vagrant/vagrant.yml) - ansible configuration
+- [provision.yml](/vagrant/provision.yml) - ansible configuration
 - [default.conf](/vagrant/ansible/default.conf) - configuration for nginx
 - [server.xml](/vagrant/ansible/server.xml) - configuration for tomcat
 - [config.xml](/vagrant/ansible/config.xml) and [jenkins](/vagrant/ansible/jenkins) - configuration files for jenkins
