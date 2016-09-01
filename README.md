@@ -26,5 +26,6 @@ Home Task Ansible
 ![](/sources/Screenshot-2.png)
 ![](/sources/Screenshot-3.png)
 ![](/sources/Screenshot-4.png)
+![](/sources/Screenshot-10.png)
 
 
