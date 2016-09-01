@@ -56,7 +56,7 @@
     template: src=configs/config.xml dest=/var/lib/jenkins/config.xml
 
   - name: Jenkins jobs
-    copy: src=jenkins/jobs dest=/var/lib/jenkins/ force=no
+    copy: src=configs/jobs dest=/var/lib/jenkins/ force=no
 
   - name: Jenkins plugins
     copy: src=jenkins/plugins dest=/var/lib/jenkins/ force=no
