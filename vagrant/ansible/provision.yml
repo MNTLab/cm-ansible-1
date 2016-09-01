@@ -1,21 +1,69 @@
 - name: Provision with Ansible
   hosts: all
   become: yes
+  
+  tasks:
+   - name: Ensure Java is installed.
+     yum: name=java-1.7.0-openjdk-devel state=installed
 
-  vars:
-    services_info: |
-      Jenkins URL - http://localhost:8080/jenkins/
-      Jenkins Delivery - http://localhost:8080/jenkins/view/Pet%20CD/
-      Application URL - http://localhost:8080/mnt-lab/
+   - name: Installing git
+     yum: name=git state=present
+ 
+   - name: Installing nginx
+     yum: name=nginx state=present
 
-  pre_tasks:
-  - debug: msg="Let's do this"
+   - name: Copying nginx config
+     template: src=res/default.conf dest=/etc/nginx/conf.d/default.conf
 
-  roles:
-  - java
-  - jenkins
-  - tomcat
-  - web
+   - name: Install tomcat
+     yum: name=tomcat state=present
 
-  post_tasks:
-  - debug: var=services_info.split('\n')
+   - name: Changing ownership of Tomcat's directory
+     file: path=/var/tomcat/ owner=tomcat group=tomcat state=directory recurse=yes
+
+   - name: Copy server.xml
+     template: src=res/server.xml dest=/etc/tomcat/server.xml
+
+   - name: Sudoers for deploy to tomcat webapps
+     copy: src=jenkins-user dest=/etc/sudoers.d/ force=yes
+
+   - name: Install tomcat-webapps
+     yum: name=tomcat-webapps state=present
+   
+   - name: Get Jenkins repo
+     get_url:
+       url: http://pkg.jenkins-ci.org/redhat/jenkins.repo
+       dest: /etc/yum.repos.d/jenkins.repo
+
+   - name: RPM KEY for Jenkins
+     rpm_key: state=present key=https://jenkins-ci.org/redhat/jenkins-ci.org.key validate_certs=False
+
+   - name: jenkins install
+     yum: name=jenkins state=present
+   
+   - name: Change jenkins port and prefix
+     template: src=res/jenkins dest=/etc/sysconfig/jenkins
+     
+   - name: Change authorization
+     template: src=res/config.xml dest=/var/lib/jenkins/config.xml
+   
+   - name: Copying Maven config to Jenkins
+     template: src=res/hudson.tasks.Maven.xml dest=/var/lib/jenkins/ force=no
+
+   - name: Jobs for Jenkins
+     copy: src=res/jobs dest=/var/lib/jenkins/ force=no
+
+   - name: Plugins for Jenkins
+     copy: src=res/plugins dest=/var/lib/jenkins/ force=no
+
+   - name: Changing Jenkins home directory ownership
+     file: path=/var/lib/jenkins owner=jenkins group=jenkins state=directory recurse=yes
+
+   - name: Starting Jenkins
+     service: name=jenkins state=restarted enabled=yes
+
+   - name: Start nginx
+     service: name=nginx state=running
+
+   - name: Start tomcat
+     service: name=tomcat state=running
