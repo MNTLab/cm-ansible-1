@@ -14,12 +14,15 @@ Completed next Home Task
 Result: <br>- [http://localhost:8080/mnt-lab](#yakor)
 <br>- [http://localhost:8080/jenkins](#yakor1)
 <br>- [Jobs console output](#yakor2)
+<br>- [Jobs Pipeline](#yakor3)
 
 <h2><a id="yakor">Deployed application to Tomcat</a></h2>
 ![imgs](vagrant/ansible/res/pic/tomcat_result.png "imgs")
 
 <h2><a id="yakor1">Jenkins jobs</a></h2>
 ![imgs](vagrant/ansible/res/pic/jobs.png "imgs")
+
+<h2><a id="yakor3">Jenkins Pipeline</a></h2>
 ![imgs](vagrant/ansible/res/pic/petcd.png "imgs")
 
 <h2><a id="yakor2">Jobs console output</a></h2>
