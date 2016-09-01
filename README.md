@@ -11,7 +11,7 @@ Completed next Home Task
 * Created job ```deploy``` ([config.xml](vagrant/ansible/res/jobs/deploy/config.xml))
 * Other configs for services [https://github.com/MNTLab/cm-ansible-1/tree/yauhen_mihura/vagrant/ansible/res]
 
-Result: <br>- [http://localhost:8080/mnt-lab](#yakor)
+<b>Result:</b> <br>- [http://localhost:8080/mnt-lab](#yakor)
 <br>- [http://localhost:8080/jenkins](#yakor1)
 <br>- [Jobs console output](#yakor2)
 <br>- [Jobs Pipeline](#yakor3)
