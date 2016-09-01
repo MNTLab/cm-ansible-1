@@ -11,11 +11,68 @@
   pre_tasks:
   - debug: msg="Let's do this"
 
-  roles:
-  - java
-  - jenkins
-  - tomcat
-  - web
+################################----JAVA----###################################################
+  tasks:
+  - name: Instaling Java
+    yum: "name=java-1.7.0-openjdk-devel state=present"
+###############################-----NGINX----##################################################
+  - name: Installing NGINX repo rpm
+    yum: "name=http://nginx.org/packages/centos/6/noarch/RPMS/nginx-release-centos-6-0.el6.ngx.noarch.rpm"
 
+  - name: Installing NGINX
+    yum: name=nginx state=latest
+
+  - name: Changing nginx config
+    template: src=configs/default.conf dest=/etc/nginx/conf.d/default.conf    
+
+  - name: NGINX | Starting NGINX
+    service: name=nginx state=started enabled=yes
+##############################-----TOMCAT-----########################################################
+  - name: Installing Tomcat
+    yum: name=tomcat state=latest
+
+  - name: Copied Tomcat config
+    template: src=configs/server.xml dest=/usr/share/tomcat/conf/server.xml
+
+  - name: Starting Tomcat
+    service: name=tomcat state=started enabled=yes
+#############################------JENKINS----##########################################################
+  - name: Downloading Jenkins from repo
+    command: wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat/jenkins.repo
+
+  - name: Git install
+    yum: name=git state=latest
+
+  - name: Jenkins repo key
+    command: rpm --import https://jenkins-ci.org/redhat/jenkins-ci.org.key
+
+  - name: Jenkins install
+    yum: name=jenkins state=latest
+
+  - name: Jenkins config1
+    template: src=configs/jenkins dest=/etc/sysconfig/jenkins
+
+  - name: Jenkins config2
+    template: src=configs/config.xml dest=/var/lib/jenkins/config.xml
+
+  - name: Jenkins jobs
+    copy: src=configs/jobs dest=/var/lib/jenkins/ force=no
+
+  - name: Jenkins plugins
+    copy: src=jenkins/plugins dest=/var/lib/jenkins/ force=no
+
+  - name: Jenkins maven
+    copy: src=configs/hudson.tasks.Maven.xml dest=/var/lib/jenkins/ force=no
+
+  - name: Jenkins chown
+    command: chown -R jenkins:jenkins /var/lib/jenkins
+
+  - name: Jenkins sudo
+    copy: src=configs/jenkins-user dest=/etc/sudoers.d/ force=no
+
+
+  - name: Jenkins starting
+    service: name=jenkins state=started enabled=yes
+######################################################################################################
   post_tasks:
   - debug: var=services_info.split('\n')
