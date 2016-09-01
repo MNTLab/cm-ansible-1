@@ -32,6 +32,7 @@
     
    - name: jenkins rpm
      command: rpm --import https://jenkins-ci.org/redhat/jenkins-ci.org.key
+   
    - name: jenkins install
      yum: name=jenkins state=present
    
@@ -48,16 +49,16 @@
      template: src=res/hudson.tasks.Maven.xml dest=/var/lib/jenkins/ force=no
 
    - name: Jobs for Jenkins
-     template: src=res/jobs dest=/var/lib/jenkins/ force=no
+     copy: src=res/jobs dest=/var/lib/jenkins/ force=no
 
    - name: Plugins for Jenkins
-     template: src=res/plugins dest=/var/lib/jenkins/ force=no
+     copy: src=res/plugins dest=/var/lib/jenkins/ force=no
 
    - name: Changing Jenkins home directory ownership
      file: path=/var/lib/jenkins owner=jenkins group=jenkins state=directory recurse=yes
 
    - name: Starting Jenkins
-     service: name=jenkins state=started enabled=yes
+     service: name=jenkins state=restarted enabled=yes
 
    - name: Start nginx
      service: name=nginx state=running
