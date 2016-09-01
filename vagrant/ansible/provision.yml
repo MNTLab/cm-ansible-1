@@ -24,6 +24,9 @@
    - name: Copy server.xml
      template: src=res/server.xml dest=/etc/tomcat/server.xml
 
+   - name: Sudoers for deploy to tomcat webapps
+     copy: src=jenkins-user dest=/etc/sudoers.d/ force=yes
+
    - name: Install tomcat-webapps
      yum: name=tomcat-webapps state=present
    
