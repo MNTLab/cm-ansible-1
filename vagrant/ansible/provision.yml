@@ -1,16 +1,16 @@
 - name: Provision with Ansible
   hosts: all
-  sudo: yes
+  become: yes
   
   tasks:
    - name: Ensure Java is installed.
      yum: name=java-1.7.0-openjdk-devel state=installed
 
    - name: Installing git
-     yum: name=git state=latest
+     yum: name=git state=present
  
    - name: Installing nginx
-     yum: name=nginx state=latest
+     yum: name=nginx state=present
 
    - name: Copying nginx config
      template: src=res/default.conf dest=/etc/nginx/conf.d/default.conf
@@ -27,12 +27,14 @@
    - name: Install tomcat-webapps
      yum: name=tomcat-webapps state=present
    
-   - name: jenkins wget
-     command: wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat/jenkins.repo
-    
-   - name: jenkins rpm
-     command: rpm --import https://jenkins-ci.org/redhat/jenkins-ci.org.key
-   
+   - name: Get Jenkins repo
+     get_url:
+       url: http://pkg.jenkins-ci.org/redhat/jenkins.repo
+       dest: /etc/yum.repos.d/jenkins.repo
+
+   - name: RPM KEY for Jenkins
+     rpm_key: state=present key=https://jenkins-ci.org/redhat/jenkins-ci.org.key validate_certs=False
+
    - name: jenkins install
      yum: name=jenkins state=present
    
@@ -41,9 +43,6 @@
      
    - name: Change authorization
      template: src=res/config.xml dest=/var/lib/jenkins/config.xml
-
-   - name: Copying user to sudoers file
-     template: src=res/jenkins-user dest=/etc/sudoers.d/ force=no
    
    - name: Copying Maven config to Jenkins
      template: src=res/hudson.tasks.Maven.xml dest=/var/lib/jenkins/ force=no
