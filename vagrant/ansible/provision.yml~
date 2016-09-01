@@ -1,0 +1,124 @@
+- name: Provision with Ansible
+  hosts: all
+  sudo: yes
+
+  vars:
+    services_info: |
+      Jenkins URL - http://localhost:8080/jenkins/
+      Jenkins Delivery - http://localhost:8080/jenkins/view/Pet%20CD/
+      Application URL - http://localhost:8080/mnt-lab/
+
+#NGINX
+  tasks:
+  - name: Installing NGINX repo rpm
+    yum:
+     name: http://nginx.org/packages/centos/6/noarch/RPMS/nginx-release-centos-6-0.el6.ngx.noarch.rpm
+
+  - name: Installing NGINX
+    yum: name=nginx state=latest
+    
+  - name: Copy config NGINX
+    template: src=src/default.conf dest=/etc/nginx/conf.d/default.conf
+    notify:
+     - restart nginx
+
+
+  - name: Starting NGINX
+    service: name=nginx state=started
+
+#JAVA    
+  - name: Java Install
+    yum: 
+     name: java-1.7.0-openjdk-devel.x86_64
+     state: present
+
+#GIT   
+  - name: Install Git
+    yum: name=git state=latest
+
+#JENKINS
+  - name: Import jenkins key
+    rpm_key:
+     key: https://jenkins-ci.org/redhat/jenkins-ci.org.key
+     state: present
+     validate_certs: no
+
+  - name: Get jenkins repo
+    get_url:
+     url: http://pkg.jenkins-ci.org/redhat/jenkins.repo
+     dest: /etc/yum.repos.d/jenkins.repo
+
+  - name: Install Jenkins
+    yum: name=jenkins state=latest
+
+  - name: Copy config Jenkins
+    template: src=src/config.xml dest=/var/lib/jenkins/config.xml
+    notify:
+     - restart jenkins
+
+  - name: Copy plugins for Jenkins
+    copy: src=src/plugins dest=/var/lib/jenkins/ force=no
+     owner=jenkins group=jenkins mode=0644
+    
+  - name: Copy jobs for Jenkins
+    copy: src=src/jobs dest=/var/lib/jenkins/ force=no
+     owner=jenkins group=jenkins mode=0644
+    
+
+  - name: Changing Jenkins configuration
+    template: src=src/jenkins dest=/etc/sysconfig/jenkins    
+    notify:
+     - restart jenkins
+  
+  - name: maven jenkins
+    template: src=src/hudson.tasks.Maven.xml dest=/var/lib/jenkins/ force=no
+
+  - name: Start jenkins
+    service: name=jenkins state=started
+
+#TOMCAT   
+  - name: Install Tomcat
+    yum: name=tomcat state=latest
+
+  - name: Copy config Tomcat
+    template: src=src/server.xml dest=/etc/tomcat/server.xml
+    notify:
+     - restart tomcat
+
+  - name: Start Tomcat
+    service: name=tomcat state=started
+
+ 
+  
+  
+
+#  - name: Install Jenkins Plugins
+#    with_items:
+#    - name: git                             
+#    - name: github                      
+#    - name: git-client                      
+#    - name: greenballs
+#    - name: delivery-pipeline-plugin
+#    - name: ssh-credentials 
+#    - name: structs 
+#    - name: maven-plugin
+#    - name: parameterized-trigger
+#    - name: jquery
+                  
+    
+#      sudo: yes
+#    get_url: validate_certs=no dest="/var/lib/jenkins/plugins/{{ item.name | mandatory }}.jpi"
+#             url="https://updates.jenkins-ci.org/latest/{{ item.name }}.hpi"
+#             owner=jenkins group=jenkins mode=0644
+#    notify: restart jenkins
+
+  handlers:
+  - name: restart nginx
+    service: name=nginx state=restarted
+  - name: restart jenkins
+    service: name=jenkins state=restarted
+  - name: restart tomcat
+    service: name=tomcat state=restarted
+
+  post_tasks:
+  - debug: var=services_info.split('\n')
