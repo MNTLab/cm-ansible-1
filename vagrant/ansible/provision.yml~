@@ -8,6 +8,7 @@
       Jenkins Delivery - http://localhost:8080/jenkins/view/Pet%20CD/
       Application URL - http://localhost:8080/mnt-lab/
 
+#NGINX
   tasks:
   - name: Installing NGINX repo rpm
     yum:
@@ -24,12 +25,18 @@
 
   - name: Starting NGINX
     service: name=nginx state=started
-    
+
+#JAVA    
   - name: Java Install
     yum: 
      name: java-1.7.0-openjdk-devel.x86_64
      state: present
 
+#GIT   
+  - name: Install Git
+    yum: name=git state=latest
+
+#JENKINS
   - name: Import jenkins key
     rpm_key:
      key: https://jenkins-ci.org/redhat/jenkins-ci.org.key
@@ -51,20 +58,25 @@
 
   - name: Copy plugins for Jenkins
     copy: src=src/plugins dest=/var/lib/jenkins/ force=no
-    
+     owner=jenkins group=jenkins mode=0644
     
   - name: Copy jobs for Jenkins
     copy: src=src/jobs dest=/var/lib/jenkins/ force=no
+     owner=jenkins group=jenkins mode=0644
     
 
   - name: Changing Jenkins configuration
-    template: src=src/jenkins dest=/etc/sysconfig/jenkins
+    template: src=src/jenkins dest=/etc/sysconfig/jenkins    
     notify:
      - restart jenkins
+  
+  - name: maven jenkins
+    template: src=src/hudson.tasks.Maven.xml dest=/var/lib/jenkins/ force=no
 
   - name: Start jenkins
     service: name=jenkins state=started
-   
+
+#TOMCAT   
   - name: Install Tomcat
     yum: name=tomcat state=latest
 
@@ -76,8 +88,7 @@
   - name: Start Tomcat
     service: name=tomcat state=started
 
-  - name: maven jenkins
-    template: src=hudson.tasks.Maven.xml dest=/var/lib/jenkins/ force=no
+ 
   
   
 
