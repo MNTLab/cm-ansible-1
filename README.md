@@ -8,12 +8,12 @@ MTN.*NIX.11 Automated Environment Configuration Management
 My additional files:
 - [Vagrantfile](/vagrant/Vagrantfile)
 - [provision.yml](/vagrant/ansible/provision.yml) - ansible configuration
-- [default.conf](/vagrant/ansible/default.conf) - configuration for nginx
-- [server.xml](/vagrant/ansible/server.xml) - configuration for tomcat
+- [default.conf](/vagrant/ansible/default.conf) - configuration file for nginx
+- [server.xml](/vagrant/ansible/server.xml) - configuration file for tomcat
 - [config.xml](/vagrant/ansible/config.xml) and [jenkins](/vagrant/ansible/jenkins) - configuration files for jenkins
-- [plugins for jenkins](/vagrant/ansible/plugins/)
-- [jobs for jenkins](/vagrant/ansible/jobs/)
-- [hudson.tasks.Maven.xml](/vagrant/ansible/hudson.tasks.Maven.xml) - correct starting maven 
+- [plugins for jenkins](/vagrant/ansible/plugins/) - folder with plugins
+- [jobs for jenkins](/vagrant/ansible/jobs/)  - folder with jobs
+- [hudson.tasks.Maven.xml](/vagrant/ansible/hudson.tasks.Maven.xml) - maven configuration file
 - [jenkins-user](/vagrant/ansible/jenkins-user) - add user jenkins to sudoers 
 
 
